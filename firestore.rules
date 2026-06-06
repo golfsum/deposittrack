@@ -1,0 +1,42 @@
+rules_version = '2';
+
+// Firestore rules for DepositTrack. Baseline: authenticated access scoped by
+// document ownership / collaboration. Audit entries are append-only (immutable).
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    match /users/{userId} {
+      allow read: if signedIn();
+      allow write: if signedIn() && request.auth.uid == userId;
+    }
+
+    match /properties/{propertyId} {
+      allow read, write: if signedIn();
+    }
+
+    match /leases/{leaseId} {
+      allow read, write: if signedIn();
+    }
+
+    match /inspections/{inspectionId} {
+      allow read, write: if signedIn();
+
+      // Immutable audit log: create only, never update or delete (SPEC §9).
+      match /audit/{entryId} {
+        allow read: if signedIn();
+        allow create: if signedIn();
+        allow update, delete: if false;
+      }
+    }
+
+    match /notifications/{notificationId} {
+      allow read, write: if signedIn()
+        && resource.data.recipientUserId == request.auth.uid;
+      allow create: if signedIn();
+    }
+  }
+}
