@@ -61,7 +61,7 @@ function MainTabs() {
 }
 
 export function RootNavigator() {
-  const { user, initializing } = useAuth();
+  const { user, guest, initializing } = useAuth();
 
   if (initializing) {
     return (
@@ -74,7 +74,7 @@ export function RootNavigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {user ? (
+        {user || guest ? (
           <Stack.Screen name="Main" component={MainTabs} />
         ) : (
           <Stack.Screen name="SignIn" component={SignInScreen} />

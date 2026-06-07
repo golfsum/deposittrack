@@ -5,7 +5,7 @@ import { useAuth } from '@/auth/AuthContext';
 import { colors, radius, spacing } from '@/theme';
 
 export function DashboardScreen() {
-  const { user, signOut } = useAuth();
+  const { user, guest, signOut, requireSignIn } = useAuth();
 
   return (
     <ScrollView
@@ -15,7 +15,19 @@ export function DashboardScreen() {
       <Text style={styles.greeting}>
         Welcome{user?.displayName ? `, ${user.displayName}` : ''}
       </Text>
-      <Text style={styles.email}>{user?.email}</Text>
+      <Text style={styles.email}>{user?.email ?? 'Browsing as guest'}</Text>
+
+      {guest && !user && (
+        <View style={styles.guestBanner}>
+          <Ionicons name="information-circle-outline" size={22} color={colors.accent} />
+          <View style={{ flex: 1 }}>
+            <Text style={styles.guestTitle}>You're exploring as a guest</Text>
+            <Text style={styles.guestBody}>
+              Create a free account to save inspections, sync, and generate reports.
+            </Text>
+          </View>
+        </View>
+      )}
 
       <View style={styles.card}>
         <Ionicons name="camera-outline" size={24} color={colors.primary} />
@@ -34,10 +46,17 @@ export function DashboardScreen() {
         </Text>
       </View>
 
-      <Pressable style={styles.signOut} onPress={() => signOut()}>
-        <Ionicons name="log-out-outline" size={20} color={colors.danger} />
-        <Text style={styles.signOutText}>Sign out</Text>
-      </Pressable>
+      {guest && !user ? (
+        <Pressable style={styles.signIn} onPress={() => requireSignIn()}>
+          <Ionicons name="log-in-outline" size={20} color={colors.white} />
+          <Text style={styles.signInText}>Sign in / Create account</Text>
+        </Pressable>
+      ) : (
+        <Pressable style={styles.signOut} onPress={() => signOut()}>
+          <Ionicons name="log-out-outline" size={20} color={colors.danger} />
+          <Text style={styles.signOutText}>Sign out</Text>
+        </Pressable>
+      )}
     </ScrollView>
   );
 }
@@ -64,4 +83,25 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.md,
   },
   signOutText: { color: colors.danger, fontSize: 16, fontWeight: '600' },
+  signIn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.sm,
+    backgroundColor: colors.primary,
+    borderRadius: radius.md,
+    paddingVertical: 14,
+  },
+  signInText: { color: colors.white, fontSize: 16, fontWeight: '700' },
+  guestBanner: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    padding: spacing.md,
+  },
+  guestTitle: { fontSize: 15, fontWeight: '700', color: colors.text },
+  guestBody: { fontSize: 13, color: colors.textMuted, marginTop: 2 },
 });

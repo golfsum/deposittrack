@@ -4,8 +4,8 @@
 // live in source control. See .env.example.
 
 const iosGoogleClientId = process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID || '';
-const easProjectId = process.env.EXPO_PUBLIC_EAS_PROJECT_ID || '00000000-0000-0000-0000-000000000000';
-const appleTeamId = process.env.APPLE_TEAM_ID || '';
+const easProjectId = process.env.EXPO_PUBLIC_EAS_PROJECT_ID || 'f557c83e-388e-41f3-8ec5-fdeb7e58cfaf';
+const appleTeamId = process.env.APPLE_TEAM_ID || 'D6V59CRG3F';
 
 // Google Sign-In on iOS needs a reversed-client-id URL scheme registered.
 function reversedClientId(clientId) {
@@ -31,6 +31,12 @@ module.exports = function (env) {
     orientation: 'portrait',
     userInterfaceStyle: 'automatic',
     newArchEnabled: true,
+    icon: './assets/icon.png',
+    splash: {
+      image: './assets/splash-icon.png',
+      resizeMode: 'contain',
+      backgroundColor: '#0E7C66',
+    },
     assetBundlePatterns: ['**/*'],
     ios: {
       supportsTablet: true,
@@ -53,6 +59,7 @@ module.exports = function (env) {
       package: 'com.deposittrack.app',
       softwareKeyboardLayoutMode: 'pan',
       adaptiveIcon: {
+        foregroundImage: './assets/adaptive-icon.png',
         backgroundColor: '#0E7C66',
       },
       permissions: [
@@ -66,12 +73,15 @@ module.exports = function (env) {
     web: {
       bundler: 'metro',
       output: 'single',
+      favicon: './assets/favicon.png',
     },
     extra: {
       ...(config.extra || {}),
       eas: {
         ...((config.extra && config.extra.eas) || {}),
-        projectId: easProjectId,
+        // Only set when a real project ID exists (from `eas init`). Omitting it
+        // lets `eas init` create/link a project instead of failing on a fake ID.
+        ...(easProjectId ? { projectId: easProjectId } : {}),
       },
     },
     plugins: [

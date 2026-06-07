@@ -17,7 +17,8 @@ import { useGoogleSignIn } from '@/auth/useGoogleSignIn';
 import { colors, radius, spacing } from '@/theme';
 
 export function SignInScreen() {
-  const { signInWithEmail, signUpWithEmail, signInWithApple } = useAuth();
+  const { signInWithEmail, signUpWithEmail, signInWithApple, continueAsGuest } =
+    useAuth();
   const [mode, setMode] = useState<'signin' | 'signup'>('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -142,6 +143,14 @@ export function SignInScreen() {
             onPress={() => run(signInWithApple)}
           />
         )}
+
+        <Pressable
+          style={styles.guestBtn}
+          onPress={() => continueAsGuest()}
+          accessibilityLabel="Explore the app without signing in"
+        >
+          <Text style={styles.guestText}>Explore the app first →</Text>
+        </Pressable>
       </View>
     </SafeAreaView>
   );
@@ -222,4 +231,6 @@ const styles = StyleSheet.create({
   },
   oauthBtnText: { color: colors.text, fontSize: 16, fontWeight: '600' },
   appleBtn: { height: 52, marginTop: spacing.sm },
+  guestBtn: { alignItems: 'center', paddingVertical: spacing.md, marginTop: spacing.xs },
+  guestText: { color: colors.textMuted, fontSize: 15, fontWeight: '600' },
 });

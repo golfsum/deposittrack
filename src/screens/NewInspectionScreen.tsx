@@ -27,7 +27,7 @@ const TYPES: { key: InspectionType; label: string }[] = [
 export function NewInspectionScreen({
   navigation,
 }: InspectionStackScreen<'NewInspection'>) {
-  const { user } = useAuth();
+  const { user, requireSignIn } = useAuth();
   const [label, setLabel] = useState('');
   const [type, setType] = useState<InspectionType>('move_in');
   const [selected, setSelected] = useState<Set<string>>(
@@ -44,7 +44,17 @@ export function NewInspectionScreen({
   }
 
   async function create() {
-    if (!user) return;
+    if (!user) {
+      Alert.alert(
+        'Sign in to save',
+        'Create a free account to save inspections and generate reports.',
+        [
+          { text: 'Not now', style: 'cancel' },
+          { text: 'Sign in', onPress: () => requireSignIn() },
+        ],
+      );
+      return;
+    }
     if (!label.trim()) {
       Alert.alert('Add a property', 'Enter a property name or address.');
       return;

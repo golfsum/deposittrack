@@ -180,6 +180,7 @@ export default function Home() {
             <span>© {new Date().getFullYear()} DepositTrack</span>
             <span>
               <a href="#features">Features</a> · <a href="#pricing">Pricing</a> ·{" "}
+              <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a> ·{" "}
               <a href={APP_STORE_URL}>Download</a>
             </span>
           </div>

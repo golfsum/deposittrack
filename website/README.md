@@ -29,7 +29,7 @@ This repo holds two Node projects (the Expo app at the root, this site in
 1. Import the GitHub repo at vercel.com.
 2. Set **Root Directory** to `website`.
 3. Framework preset is auto-detected (Next.js). `vercel.json` pins the commands.
-4. Deploy. Add a custom domain (e.g. `deposittrack.app`) under Project → Domains.
+4. Deploy. Add a custom domain (`deposittrack.com`) under Project → Domains.
 
 Or via CLI from this folder:
 

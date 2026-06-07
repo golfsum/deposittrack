@@ -24,6 +24,12 @@ import { auth } from '@/lib/firebase';
 interface AuthContextValue {
   user: User | null;
   initializing: boolean;
+  /** True when the user chose to explore the app without signing in. */
+  guest: boolean;
+  /** Enter the app without an account (read-only / preview). */
+  continueAsGuest: () => void;
+  /** Leave guest mode and return to the sign-in screen. */
+  requireSignIn: () => void;
   signInWithEmail: (email: string, password: string) => Promise<void>;
   signUpWithEmail: (
     email: string,
@@ -39,10 +45,12 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [initializing, setInitializing] = useState(true);
+  const [guest, setGuest] = useState(false);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (u) => {
       setUser(u);
+      if (u) setGuest(false); // a real session supersedes guest mode
       setInitializing(false);
     });
     return unsub;
@@ -52,6 +60,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     () => ({
       user,
       initializing,
+      guest,
+      continueAsGuest: () => setGuest(true),
+      requireSignIn: () => setGuest(false),
       signInWithEmail: async (email, password) => {
         await signInWithEmailAndPassword(auth, email.trim(), password);
       },
@@ -94,10 +105,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       },
       signOut: async () => {
+        setGuest(false);
         await fbSignOut(auth);
       },
     }),
-    [user, initializing],
+    [user, initializing, guest],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

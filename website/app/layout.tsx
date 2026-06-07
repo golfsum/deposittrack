@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://deposittrack.app"),
+  metadataBase: new URL("https://deposittrack.com"),
   title: {
     default: "DepositTrack — Protect Security Deposits with Verified Photo Evidence",
     template: "%s · DepositTrack",
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     title: "DepositTrack — Protect Security Deposits with Verified Photo Evidence",
     description:
       "Move-in and move-out inspection reports with photos, signatures, GPS verification, and PDFs.",
-    url: "https://deposittrack.app",
+    url: "https://deposittrack.com",
     siteName: "DepositTrack",
     type: "website",
   },
